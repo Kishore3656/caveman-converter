@@ -15,95 +15,69 @@
     }
 
     body {
-      font-family: Georgia, serif;
-      background: #e8dcc8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f3ef 0%, #eae5de 100%);
       min-height: 100vh;
-      color: #3d1a00;
+      color: #2c2c2c;
     }
 
-    /* Sidebar */
+    /* Hide sidebar completely */
     .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 220px;
-      height: 100vh;
-      background: #3d5a2e;
-      display: flex;
-      flex-direction: column;
-      padding: 24px 0;
-      z-index: 100;
-      overflow-y: auto;
+      display: none;
     }
 
-    .sidebar-logo {
-      font-family: 'Uncial Antiqua', serif;
-      font-size: 1.6rem;
-      line-height: 1.2;
-      color: #e8b820;
-      padding: 0 20px 24px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      font-weight: bold;
-    }
-
-    .sidebar nav ul {
-      list-style: none;
-      padding: 16px 0;
-      margin: 0;
-    }
-
-    .sidebar nav li {
-      padding: 12px 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1rem;
-      color: rgba(255, 255, 255, 0.85);
-      transition: background-color 0.2s;
-    }
-
-    .sidebar nav li.active {
-      background: #4d7a3e;
-      color: #fff;
-    }
-
-    .sidebar nav li:hover:not(.active) {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Main area */
+    /* Main area - full width */
     .main {
-      margin-left: 220px;
-      padding: 32px;
+      margin-left: 0;
+      padding: 48px 40px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* Header section */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 48px;
+    }
+
+    .app-title {
+      font-family: 'Uncial Antiqua', serif;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #2c2c2c;
+      letter-spacing: 2px;
     }
 
     /* Toggle pill */
     .toggle-pill {
       display: flex;
       align-items: center;
-      gap: 12px;
-      justify-content: center;
-      margin-bottom: 32px;
-      width: fit-content;
-      margin-left: auto;
-      margin-right: auto;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 12px 24px;
+      border-radius: 50px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
     .toggle-pill span {
-      font-family: Georgia, serif;
+      font-family: system-ui;
       font-size: 0.95rem;
-      color: #3d1a00;
+      color: #2c2c2c;
+      font-weight: 500;
     }
 
     .toggle-switch {
       position: relative;
       display: inline-block;
-      width: 52px;
-      height: 26px;
+      width: 56px;
+      height: 28px;
     }
 
     .toggle-switch input {
@@ -113,8 +87,8 @@
     .toggle-slider {
       position: absolute;
       inset: 0;
-      background: #8a9a7a;
-      border-radius: 26px;
+      background: #d0d0d0;
+      border-radius: 28px;
       cursor: pointer;
       transition: background 0.3s;
     }
@@ -122,97 +96,106 @@
     .toggle-slider::before {
       content: '';
       position: absolute;
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       background: white;
-      left: 3px;
-      top: 3px;
+      left: 2px;
+      top: 2px;
       transition: transform 0.3s;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
     .toggle-switch input:checked + .toggle-slider {
-      background: #3d5a2e;
+      background: #2c2c2c;
     }
 
     .toggle-switch input:checked + .toggle-slider::before {
-      transform: translateX(26px);
+      transform: translateX(28px);
     }
 
     /* Workspace */
     .workspace {
       display: flex;
-      align-items: flex-start;
-      gap: 0;
+      align-items: stretch;
+      gap: 32px;
       flex: 1;
     }
 
     /* Panels */
     .panel {
       flex: 1;
-      background: #b8a898;
-      border: 6px solid #8a7a6a;
-      border-radius: 20px;
-      box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
-      padding: 24px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 32px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 16px;
       position: relative;
+      backdrop-filter: blur(10px);
     }
 
     .panel-title {
-      font-family: 'Uncial Antiqua', Georgia, serif;
-      font-size: 1.3rem;
-      color: #3d1a00;
+      font-family: system-ui;
+      font-size: 1.2rem;
+      color: #2c2c2c;
       text-align: center;
-      margin: 0 0 10px 0;
-      font-weight: bold;
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     .panel textarea {
-      background: #f5f0e8;
-      border: 2px solid #8a7a6a;
-      border-radius: 10px;
-      font-family: Georgia, serif;
+      background: #fafaf8;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 12px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Menlo, Courier, monospace;
       font-size: 0.95rem;
-      color: #2a1800;
-      padding: 12px;
+      color: #2c2c2c;
+      padding: 16px;
       resize: vertical;
-      min-height: 260px;
+      min-height: 300px;
       width: 100%;
       flex: 1;
+      line-height: 1.6;
     }
 
     .panel textarea::placeholder {
-      color: #9a8a7a;
+      color: #9a9a9a;
+    }
+
+    .panel textarea:focus {
+      outline: none;
+      border-color: rgba(0, 0, 0, 0.12);
+      background: #fff;
     }
 
     .drop-zone {
       display: none;
-      border: 3px dashed #8a7a6a;
-      background: #f5f0e8;
-      border-radius: 10px;
-      min-height: 260px;
+      border: 2px dashed rgba(0, 0, 0, 0.12);
+      background: #fafaf8;
+      border-radius: 12px;
+      min-height: 300px;
       flex: 1;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      color: #6a5a4a;
-      font-family: Georgia, serif;
+      color: #6a6a6a;
+      font-family: system-ui;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .drop-zone.drag-over {
-      border-color: #e8b820;
-      background: #f8f4e0;
+      border-color: rgba(0, 0, 0, 0.2);
+      background: #f5f3ef;
     }
 
     .drop-zone p {
-      margin: 10px 0;
+      margin: 8px 0;
       font-size: 0.95rem;
     }
 
@@ -221,82 +204,88 @@
     }
 
     .output-area {
-      background: #f5f0e8;
-      border: 2px solid #8a7a6a;
-      border-radius: 10px;
-      font-family: Georgia, serif;
+      background: #fafaf8;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 12px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Menlo, Courier, monospace;
       font-size: 0.95rem;
-      color: #2a1800;
-      padding: 12px;
-      min-height: 260px;
+      color: #2c2c2c;
+      padding: 16px;
+      min-height: 300px;
       width: 100%;
       flex: 1;
       white-space: pre-wrap;
       word-break: break-word;
       overflow-y: auto;
+      line-height: 1.6;
     }
 
     /* Center column with button */
     .center-col {
-      width: 120px;
+      width: 140px;
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 0 16px;
+      padding: 0;
     }
 
     .btn-unga {
-      background: radial-gradient(ellipse at 40% 35%, #f0cc30 0%, #b8860b 70%);
-      border: 3px solid #8b6914;
+      background: linear-gradient(135deg, #d4a574 0%, #c69064 50%, #b8794f 100%);
+      border: 2px solid #8b6f47;
       border-radius: 50%;
-      color: #3d1a00;
+      color: #fff;
       font-family: 'Uncial Antiqua', Impact, serif;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: bold;
       padding: 0;
-      width: 90px;
-      height: 90px;
+      width: 110px;
+      height: 110px;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), inset 0 1px 4px rgba(255, 240, 100, 0.4);
+      box-shadow: 0 8px 24px rgba(139, 111, 71, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.2);
       letter-spacing: 1px;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       line-height: 1.3;
-      transition: all 0.1s;
+      transition: all 0.2s;
     }
 
     .btn-unga:hover {
-      filter: brightness(1.1);
-      transform: scale(1.04);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(139, 111, 71, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2);
     }
 
     .btn-unga:active {
-      transform: scale(0.97);
+      transform: translateY(-2px);
+    }
+
+    .btn-unga:disabled {
+      opacity: 0.6;
     }
 
     /* Action buttons */
     .btn-stone {
-      background: #b8a898;
-      border: 2px solid #8a7a6a;
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 8px;
-      padding: 8px 20px;
-      font-family: Georgia, serif;
+      padding: 10px 24px;
+      font-family: system-ui;
       font-size: 0.85rem;
-      color: #3d1a00;
+      color: #2c2c2c;
       cursor: pointer;
       align-self: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
       transition: all 0.2s;
-      font-weight: bold;
-      margin-top: 12px;
+      font-weight: 500;
+      margin-top: 16px;
     }
 
     .btn-stone:hover {
-      background: #a89888;
+      background: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
     .btn-stone:active {
@@ -305,59 +294,65 @@
 
     /* Footer */
     footer {
-      margin-left: 220px;
-      margin-top: 32px;
-      padding: 16px 32px;
+      margin-left: 0;
+      margin-top: 48px;
+      padding: 24px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-family: 'Uncial Antiqua', Georgia, serif;
+      font-family: system-ui;
       font-size: 0.8rem;
-      color: #3d5a2e;
-      border-top: 1px solid #c8b898;
-      background: #e8dcc8;
+      color: #666;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      background: transparent;
     }
 
     footer nav {
       display: flex;
-      gap: 20px;
+      gap: 32px;
     }
 
     footer nav a {
-      color: #3d5a2e;
+      color: #666;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 500;
       transition: color 0.2s;
     }
 
     footer nav a:hover {
-      color: #5d7a4e;
+      color: #2c2c2c;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .workspace {
+        gap: 24px;
+      }
+      .center-col {
+        width: 120px;
+      }
+      .btn-unga {
+        width: 100px;
+        height: 100px;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">THE MODERN<br>PRIMITIVE</div>
-    <nav>
-      <ul>
-        <li class="active">⊞ Dashboard</li>
-        <li>↺ History</li>
-        <li>▤ Archives</li>
-      </ul>
-    </nav>
-  </aside>
-
   <!-- Main Content -->
   <main class="main">
-    <!-- Toggle Pill -->
-    <div class="toggle-pill">
-      <span>Type It</span>
-      <label class="toggle-switch">
-        <input type="checkbox" id="modeToggle">
-        <span class="toggle-slider"></span>
-      </label>
-      <span>File Upload</span>
+    <!-- Header -->
+    <div class="header">
+      <div class="app-title">CAVEMAN CONVERTER</div>
+      <!-- Toggle Pill -->
+      <div class="toggle-pill">
+        <span>Type It</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="modeToggle">
+          <span class="toggle-slider"></span>
+        </label>
+        <span>File Upload</span>
+      </div>
     </div>
 
     <!-- Workspace -->
@@ -424,15 +419,22 @@
     // Groq API config
     const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
     const GROQ_MODEL = 'llama-3.1-8b-instant';
-    const SYSTEM_PROMPT = `You convert formal English into authentic caveman speech. Rules:
-- Drop articles (the, a, an)
-- Drop helper verbs (is, are, was, were, be, have, has, do, does)
-- Use simple present tense (go, not went; run, not ran)
-- Shorten adverbs to root adjectives (quickly → quick, happily → happy)
-- Keep nouns intact, caveman still names things
-- Keep meaning intact and understandable
-- If input has markdown (# headings, > quotes, - lists), preserve markers exactly
-- Output ONLY the rewritten text, no explanations`;
+    const SYSTEM_PROMPT = `You convert English into authentic caveman speech. Follow these strict rules:
+1. DROP articles: the, a, an
+2. DROP helper verbs: is, are, was, were, be, have, has, do, does, did
+3. Use simple present tense: go (not went), like (not liked), build (not built)
+4. Turn adverbs into adjectives: quickly→quick, happily→happy, quietly→quiet
+5. Vary subject pronouns - don't repeat "me" or same name constantly
+6. Keep nouns - caveman knows what things are
+7. NEVER generate markdown symbols or headers (no # at start of lines)
+8. NEVER start output with markdown - always output plain text only
+9. If original text HAS markdown, preserve ONLY those markers and convert text
+10. Keep meaning clear - message must be understood
+Examples:
+- "I didn't like this" → "Like no this"
+- "The building is tall" → "Building tall"
+- "They quickly ran away" → "They run quick away"
+Output ONLY converted text - no explanations, no markdown, no symbols added`;
 
     // AI-powered caveman conversion
     async function cavemanifyAI(text) {
@@ -461,7 +463,13 @@
       }
 
       const data = await response.json();
-      return data.choices[0].message.content.trim();
+      let result = data.choices[0].message.content.trim();
+
+      // Remove unwanted markdown headers that LLM sometimes adds
+      // Remove lines that start with # symbols (markdown headers)
+      result = result.split('\n').filter(line => !line.trim().startsWith('#')).join('\n').trim();
+
+      return result;
     }
 
     // DOM elements
