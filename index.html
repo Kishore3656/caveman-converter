@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caveman Converter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Georgia, serif;
+      background: #e8dcc8;
+      min-height: 100vh;
+      color: #3d1a00;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh;
+      background: #3d5a2e;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      font-family: 'Uncial Antiqua', serif;
+      font-size: 1.6rem;
+      line-height: 1.2;
+      color: #e8b820;
+      padding: 0 20px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: bold;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      padding: 16px 0;
+      margin: 0;
+    }
+
+    .sidebar nav li {
+      padding: 12px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      transition: background-color 0.2s;
+    }
+
+    .sidebar nav li.active {
+      background: #4d7a3e;
+      color: #fff;
+    }
+
+    .sidebar nav li:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Main area */
+    .main {
+      margin-left: 220px;
+      padding: 32px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Toggle pill */
+    .toggle-pill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 32px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .toggle-pill span {
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      color: #3d1a00;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 26px;
+    }
+
+    .toggle-switch input {
+      display: none;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #8a9a7a;
+      border-radius: 26px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      left: 3px;
+      top: 3px;
+      transition: transform 0.3s;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background: #3d5a2e;
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(26px);
+    }
+
+    /* Workspace */
+    .workspace {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      flex: 1;
+    }
+
+    /* Panels */
+    .panel {
+      flex: 1;
+      background: #b8a898;
+      border: 6px solid #8a7a6a;
+      border-radius: 20px;
+      box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+
+    .panel-title {
+      font-family: 'Uncial Antiqua', Georgia, serif;
+      font-size: 1.3rem;
+      color: #3d1a00;
+      text-align: center;
+      margin: 0 0 10px 0;
+      font-weight: bold;
+    }
+
+    .panel textarea {
+      background: #f5f0e8;
+      border: 2px solid #8a7a6a;
+      border-radius: 10px;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      color: #2a1800;
+      padding: 12px;
+      resize: vertical;
+      min-height: 260px;
+      width: 100%;
+      flex: 1;
+    }
+
+    .panel textarea::placeholder {
+      color: #9a8a7a;
+    }
+
+    .drop-zone {
+      display: none;
+      border: 3px dashed #8a7a6a;
+      background: #f5f0e8;
+      border-radius: 10px;
+      min-height: 260px;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #6a5a4a;
+      font-family: Georgia, serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .drop-zone.drag-over {
+      border-color: #e8b820;
+      background: #f8f4e0;
+    }
+
+    .drop-zone p {
+      margin: 10px 0;
+      font-size: 0.95rem;
+    }
+
+    .drop-zone input[type="file"] {
+      display: none;
+    }
+
+    .output-area {
+      background: #f5f0e8;
+      border: 2px solid #8a7a6a;
+      border-radius: 10px;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      color: #2a1800;
+      padding: 12px;
+      min-height: 260px;
+      width: 100%;
+      flex: 1;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-y: auto;
+    }
+
+    /* Center column with button */
+    .center-col {
+      width: 120px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+    }
+
+    .btn-unga {
+      background: radial-gradient(ellipse at 40% 35%, #f0cc30 0%, #b8860b 70%);
+      border: 3px solid #8b6914;
+      border-radius: 50%;
+      color: #3d1a00;
+      font-family: 'Uncial Antiqua', Impact, serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      padding: 0;
+      width: 90px;
+      height: 90px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), inset 0 1px 4px rgba(255, 240, 100, 0.4);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.3;
+      transition: all 0.1s;
+    }
+
+    .btn-unga:hover {
+      filter: brightness(1.1);
+      transform: scale(1.04);
+    }
+
+    .btn-unga:active {
+      transform: scale(0.97);
+    }
+
+    /* Action buttons */
+    .btn-stone {
+      background: #b8a898;
+      border: 2px solid #8a7a6a;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-family: Georgia, serif;
+      font-size: 0.85rem;
+      color: #3d1a00;
+      cursor: pointer;
+      align-self: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+
+    .btn-stone:hover {
+      background: #a89888;
+    }
+
+    .btn-stone:active {
+      transform: scale(0.98);
+    }
+
+    /* Footer */
+    footer {
+      margin-left: 220px;
+      margin-top: 32px;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Uncial Antiqua', Georgia, serif;
+      font-size: 0.8rem;
+      color: #3d5a2e;
+      border-top: 1px solid #c8b898;
+      background: #e8dcc8;
+    }
+
+    footer nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    footer nav a {
+      color: #3d5a2e;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+
+    footer nav a:hover {
+      color: #5d7a4e;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">THE MODERN<br>PRIMITIVE</div>
+    <nav>
+      <ul>
+        <li class="active">⊞ Dashboard</li>
+        <li>↺ History</li>
+        <li>▤ Archives</li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Toggle Pill -->
+    <div class="toggle-pill">
+      <span>Type It</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="modeToggle">
+        <span class="toggle-slider"></span>
+      </label>
+      <span>File Upload</span>
+    </div>
+
+    <!-- Workspace -->
+    <div class="workspace">
+      <!-- Left Panel -->
+      <div class="panel">
+        <h2 class="panel-title">Sophisticated Speech</h2>
+        <textarea id="inputText" placeholder="Type your modern thoughts here..."></textarea>
+        <div class="drop-zone" id="dropZone">
+          <p>🦴 Drop .txt or .md here</p>
+          <p>or</p>
+          <p style="font-weight: bold; cursor: pointer;">click to browse</p>
+          <input type="file" id="fileInput" accept=".txt,.md">
+        </div>
+        <button class="btn-stone" id="clearBtn">CLEAR</button>
+      </div>
+
+      <!-- Center Column -->
+      <div class="center-col">
+        <button class="btn-unga" id="translateBtn">UNGA<br>TRANSLATE</button>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="panel">
+        <h2 class="panel-title">Cave Wall</h2>
+        <div class="output-area" id="outputArea"></div>
+        <button class="btn-stone" id="saveBtn">SAVE</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <span>© 10,000 BC CAVEMAN CONVERTER</span>
+    <nav>
+      <a href="#">PRIVACY</a>
+      <a href="#">ARTIFACTS</a>
+      <a href="#">CONTACT</a>
+    </nav>
+  </footer>
+
+  <script>
+    // State
+    let currentMode = 'type';
+    let uploadedFilename = '';
+    let currentFileMode = '';
+    let _uploadedContent = '';
+
+    // Stop words set
+    const STOP_WORDS = new Set([
+      'the', 'a', 'an', 'is', 'are', 'am', 'was', 'were', 'be', 'been', 'being',
+      'will', 'would', 'could', 'should', 'have', 'has', 'had',
+      'do', 'does', 'did', 'very', 'really', 'just', 'quite', 'rather',
+      'however', 'therefore', 'furthermore', 'that', 'which', 'this'
+    ]);
+
+    // Irregular past tense map
+    const IRREGULAR_PAST = {
+      went: 'go', gone: 'go', ran: 'run', saw: 'see', came: 'come',
+      took: 'take', gave: 'give', knew: 'know', thought: 'think',
+      bought: 'buy', caught: 'catch', brought: 'bring', taught: 'teach',
+      found: 'find', told: 'tell', said: 'say', made: 'make',
+      left: 'leave', felt: 'feel', kept: 'keep', met: 'meet',
+      sat: 'sit', stood: 'stand', heard: 'hear', held: 'hold',
+      read: 'read', led: 'lead', sent: 'send', spent: 'spend',
+      built: 'build', grew: 'grow', drew: 'draw', flew: 'fly',
+      threw: 'throw', blew: 'blow', showed: 'show', got: 'get',
+      eaten: 'eat', ate: 'eat'
+    };
+
+    // Cavemanify function
+    function cavemanify(text) {
+      const lines = text.split('\n');
+      return lines.map(line => {
+        if (line.startsWith('```') || line.startsWith('    ')) return line;
+
+        return line
+          .split(/\s+/)
+          .map(word => {
+            if (!word) return '';
+
+            const lower = word.toLowerCase().replace(/[^a-z'-]/g, '');
+            const punct = word.match(/[^a-zA-Z'-]+$/)?.[0] ?? '';
+            const cleanWord = word.replace(/[^a-zA-Z'-]/g, '');
+
+            if (!lower) return '';
+
+            // Check irregular past tense first
+            if (IRREGULAR_PAST[lower]) return IRREGULAR_PAST[lower] + punct;
+
+            // Strip -ing (min: word > 5, stem >= 3)
+            if (lower.endsWith('ing') && lower.length > 5 && lower.length - 3 >= 3) {
+              return lower.slice(0, -3) + punct;
+            }
+
+            // Strip -ed (min: word > 4, stem >= 3)
+            if (lower.endsWith('ed') && lower.length > 4 && lower.length - 2 >= 3) {
+              if (!IRREGULAR_PAST[lower.slice(0, -2)]) {
+                return lower.slice(0, -2) + punct;
+              }
+            }
+
+            // Strip -ly (min: word > 4, stem >= 3)
+            if (lower.endsWith('ly') && lower.length > 4 && lower.length - 2 >= 3) {
+              return lower.slice(0, -2) + punct;
+            }
+
+            // Remove stop words
+            if (STOP_WORDS.has(lower)) return '';
+
+            return word;
+          })
+          .filter(Boolean)
+          .join(' ')
+          .replace(/\s{2,}/g, ' ')
+          .trim();
+      }).join('\n');
+    }
+
+    // Cavemanify Markdown
+    function cavemanifyMdRaw(text) {
+      const lines = text.split('\n');
+      let inFence = false;
+
+      return lines.map(line => {
+        if (line.startsWith('```')) {
+          inFence = !inFence;
+          return line;
+        }
+        if (inFence || line.startsWith('    ')) return line;
+
+        // Preserve heading markers
+        const headingMatch = line.match(/^(#{1,6}\s+)(.*)/);
+        if (headingMatch) return headingMatch[1] + cavemanify(headingMatch[2]);
+
+        // Preserve blockquote markers
+        const bqMatch = line.match(/^(>\s+)(.*)/);
+        if (bqMatch) return bqMatch[1] + cavemanify(bqMatch[2]);
+
+        // Preserve list markers
+        const listMatch = line.match(/^(\s*[-*+]\s+|\s*\d+\.\s+)(.*)/);
+        if (listMatch) return listMatch[1] + cavemanify(listMatch[2]);
+
+        return cavemanify(line);
+      }).join('\n');
+    }
+
+    // DOM elements
+    const modeToggle = document.getElementById('modeToggle');
+    const inputText = document.getElementById('inputText');
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const outputArea = document.getElementById('outputArea');
+    const translateBtn = document.getElementById('translateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const saveBtn = document.getElementById('saveBtn');
+
+    // Toggle mode
+    modeToggle.addEventListener('change', () => {
+      currentMode = modeToggle.checked ? 'file' : 'type';
+      if (currentMode === 'file') {
+        inputText.style.display = 'none';
+        dropZone.style.display = 'flex';
+      } else {
+        inputText.style.display = 'block';
+        dropZone.style.display = 'none';
+        uploadedFilename = '';
+        currentFileMode = '';
+        _uploadedContent = '';
+      }
+    });
+
+    // File upload handlers
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+
+    function handleFile(file) {
+      if (!file) return;
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (ext !== 'txt' && ext !== 'md') {
+        showError('Cave no understand. Use .txt or .md only.');
+        return;
+      }
+      uploadedFilename = file.name.replace(/\.(txt|md)$/, '');
+      currentFileMode = ext;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        const content = e.target.result.trim();
+        if (!content) {
+          showError('File empty. Ug.');
+          return;
+        }
+        _uploadedContent = content;
+        const p = dropZone.querySelector('p:first-of-type');
+        if (p) p.textContent = `📄 Loaded: ${file.name}`;
+      };
+      reader.readAsText(file);
+    }
+
+    // Translate button
+    translateBtn.addEventListener('click', () => {
+      let raw = '';
+      let isMd = false;
+
+      if (currentMode === 'type') {
+        raw = inputText.value.trim();
+        if (!raw) {
+          showError('Ug. No words. Cave empty.');
+          return;
+        }
+        isMd = false;
+      } else {
+        raw = (_uploadedContent || '').trim();
+        if (!raw) {
+          showError('Ug. No words. Cave empty.');
+          return;
+        }
+        isMd = (currentFileMode === 'md');
+      }
+
+      const result = isMd ? cavemanifyMdRaw(raw) : cavemanify(raw);
+      outputArea.textContent = result;
+      outputArea.style.color = '#2a1800';
+    });
+
+    // Clear button
+    clearBtn.addEventListener('click', () => {
+      inputText.value = '';
+      _uploadedContent = '';
+      uploadedFilename = '';
+      currentFileMode = '';
+      outputArea.textContent = '';
+      outputArea.style.color = '#2a1800';
+      if (currentMode === 'file') {
+        const p = dropZone.querySelector('p:first-of-type');
+        if (p) p.textContent = '🦴 Drop .txt or .md here';
+        fileInput.value = '';
+      }
+    });
+
+    // Save button
+    saveBtn.addEventListener('click', () => {
+      const output = outputArea.textContent.trim();
+      if (!output) {
+        showError('Ug. No words. Cave empty.');
+        return;
+      }
+
+      const ext = (currentFileMode === 'md') ? 'md' : 'txt';
+      const base = uploadedFilename || 'cave-output';
+      const filename = `${base}-cave.${ext}`;
+
+      const blob = new Blob([output], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    });
+
+    // Error display
+    function showError(msg) {
+      outputArea.textContent = msg;
+      outputArea.style.color = '#8b0000';
+      setTimeout(() => {
+        outputArea.style.color = '#2a1800';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
