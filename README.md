@@ -4,24 +4,36 @@
 
 ## What It Does
 
-The Caveman Converter strips stop words, removes morphological suffixes (`-ing`, `-ed`, `-ly`), and applies irregular verb mapping to produce terse, brutalist caveman language. 
+The Caveman Converter uses an AI language model (Groq's llama-3.1-8b-instant) to intelligently rewrite modern English as authentic caveman speech. It drops articles, simplifies verbs, and maintains meaning while producing short, grunting, brutalist language.
 
-**Input:** "I went to the store and bought some amazing things."  
-**Output:** "Go store bought things."
+**Input:** "The ancient civilizations have developed sophisticated technologies and remarkably advanced architectural structures."  
+**Output:** "Old tribe build strong things Old tribe make sharp rock tools, build big houses. Rock houses stand long time."
 
-Supports plain text (`.txt`) and Markdown (`.md`) files with structure preservation.
+Supports plain text (`.txt`) and Markdown (`.md`) files with structure preservation. 100% client-side — no server required.
 
 ## How to Use
 
-### Online (No Installation)
-1. Go to [app.netlify.com/drop](https://app.netlify.com/drop)
-2. Drag the `index.html` file into the browser window
-3. Get a live public URL instantly — no signup required
+### Online (Easiest)
+1. Go to [caveman-converter GitHub Pages](https://kishore3656.github.io/caveman-converter/) (if deployed)
+2. Or: Go to [app.netlify.com/drop](https://app.netlify.com/drop)
+3. Drag the `index.html` file into the browser window
+4. Get a live public URL instantly — no signup required
+5. **Important:** The app needs a valid Groq API key (stored in `.env`) to work
 
 ### Local (Quick Start)
-1. Save the `index.html` file to your computer
-2. Open it in any modern web browser (Chrome, Firefox, Safari, Edge)
-3. Start converting
+1. Clone this repository: `git clone https://github.com/Kishore3656/caveman-converter.git`
+2. Create a `.env` file with your Groq API key:
+   ```
+   GROQ_API_KEY=gsk_your_key_here
+   ```
+3. Open `index.html` in any modern web browser (Chrome, Firefox, Safari, Edge)
+4. Start converting!
+
+**Getting a Free Groq API Key:**
+1. Go to [console.groq.com](https://console.groq.com)
+2. Sign up (free, no credit card required)
+3. Create an API key
+4. Paste it into your `.env` file
 
 ### Features
 - **Type It Mode:** Paste or type modern English directly into the left panel
@@ -30,17 +42,15 @@ Supports plain text (`.txt`) and Markdown (`.md`) files with structure preservat
 - **One-Click Download:** Save converted output with a single click
 - **100% Client-Side:** No server, no internet required after loading — all processing happens in your browser
 
-## Conversion Rules
+## How It Works
 
-The converter applies these transformations in order:
+The converter uses **Groq's llama-3.1-8b-instant** model to intelligently rewrite text. The AI understands:
 
-1. **Stop Words Removed:** the, a, an, is, are, was, were, be, have, has, do, does, very, really, just, etc.
-2. **Suffix Stripping:**
-   - `-ing` → stripped (running → run)
-   - `-ed` → stripped (walked → walk)
-   - `-ly` → stripped (quickly → quick)
-3. **Irregular Verb Mapping:** went → go, ran → run, came → come, made → make, etc.
-4. **Whitespace Collapsed:** Multiple spaces reduced to one
+1. **Articles & Helpers:** Drops "the", "a", "an", "is", "are", "was", etc.
+2. **Verb Simplification:** Converts past tense to simple forms (went → go, bought → buy)
+3. **Adjective/Adverb Reduction:** Simplifies descriptors (quickly → quick, amazing → amazing things)
+4. **Repetition:** Caveman speech is repetitive and grunting
+5. **Meaning Preservation:** Always keeps the core message understandable
 
 **Protected Content:**
 - Code blocks (fenced with ``` or indented with 4 spaces)
@@ -89,8 +99,13 @@ Advanced technology systems.
 | Framework | Pure HTML5 / CSS3 / Vanilla JS | $0 |
 | Display Fonts | [Uncial Antiqua](https://fonts.google.com/specimen/Uncial+Antiqua) (Google Fonts) | $0 |
 | Markdown Parsing | [marked.js v12](https://marked.js.org/) (CDN) | $0 |
-| Hosting | Netlify Drop (free tier) | $0 |
+| AI Model | [Groq](https://groq.com) llama-3.1-8b-instant | $0 (free tier) |
+| Hosting | Netlify Drop or GitHub Pages (free tier) | $0 |
 | **Total** | | **$0** |
+
+**Free Tier Details:**
+- Groq free tier: 14,400 requests/day, 30 requests/min, no credit card required
+- Perfect for a public demo site — the free quota is plenty for typical usage
 
 ## Browser Support
 
